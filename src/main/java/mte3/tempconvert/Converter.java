@@ -4,32 +4,41 @@
 package mte3.tempconvert;
 import java.util.Scanner;
 
+
 public class Converter {
+
     
     private static class CelsiusToFahrenheit implements TempConvert {
-
         @Override
-        public double convert(double temp) {    return temp * 9.0 / 5.0 + 32;    }
-        
-    } // CelciusToFahrenheit closed
+        public double convert(double temp) { return temp * 9.0 / 5.0 + 32; }
+    }
 
     public static void main(String[] args) {
-        
-        try(Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Please enter temperature (for conversion): ");
 
-            // (part 1) conversion from C to F
-            
-            
-            // (part 2) conversion from F to C
-            
-            
-            // (part 3) conversion from F to K
-            
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Please enter temperature: ");
+            double input = scanner.nextDouble();
 
+            // (Part 1) Convert C → F using static inner class
+            TempConvert cToF = new CelsiusToFahrenheit();
+            double resultCF = cToF.convert(input);
+            System.out.println("C to F: " + resultCF);
 
-        }  // try { } block closed
+            // (Part 2) Convert F → C using anonymous class
+            TempConvert fToC = new TempConvert() {
+                @Override
+                public double convert(double temp) {
+                    return (temp - 32) * 5.0 / 9.0;
+                }
+            };
+            double resultFC = fToC.convert(input);
+            System.out.println("F to C: " + resultFC);
 
-    } // main () method closed
+            // (Part 3) Convert F → K using lambda
+            TempConvert fToK = (temp) -> (temp - 32) * 5.0 / 9.0 + 273.15;
+            double resultFK = fToK.convert(input);
+            System.out.println("F to K: " + resultFK);
 
-} // Converter { } class closed
+        }
+    }
+}

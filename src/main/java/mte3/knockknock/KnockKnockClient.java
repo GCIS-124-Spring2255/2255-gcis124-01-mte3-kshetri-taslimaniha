@@ -13,21 +13,36 @@ public class KnockKnockClient {
     public static int PORT = 54322;
     public static String SERVER = "localhost";
 
-    public static void sendAndReceive(PrintWriter writer, String message, Scanner scanner) {
+    // Helper: send message, print it, read reply, print it
+    public static String sendAndReceive(PrintWriter writer, String message, Scanner scanner) {
         
-        // 
-        // 
-        // 
+        writer.println(message);
+        writer.flush();
+        System.out.println("Sent: " + message);
 
+        String reply = scanner.nextLine();
+        System.out.println("Received: " + reply);
+
+        return reply;
     } // sendAndReceive() method closed
     
 
     public static void joke(String who,String punchLine) throws IOException {
-        
-        //  
-        // 
-        // 
+        try (Socket socket = new Socket(SERVER, PORT);
+             PrintWriter writer = new PrintWriter(socket.getOutputStream());
+             Scanner scanner = new Scanner(socket.getInputStream())) {
 
+            // Step 1: Client starts joke
+            String reply = sendAndReceive(writer, "Knock knock", scanner);
+
+            // Step 2: Server should say "Who's there?"
+            reply = sendAndReceive(writer, who, scanner);
+
+            // Step 3: Server should say "<who> who?"
+            sendAndReceive(writer, punchLine, scanner);
+
+        }
+        
     } // joke() method closed
 
     public static void main(String[] args) throws IOException {
@@ -48,3 +63,5 @@ public class KnockKnockClient {
     // hint: please run KnockKnockServer first and then run KnockKnockClient
 
 } // KnockKnockClient { } class closed
+
+
